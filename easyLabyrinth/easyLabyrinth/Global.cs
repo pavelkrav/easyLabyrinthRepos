@@ -5,9 +5,12 @@ namespace easyLabyrinth
 {
     static class Global
     {
-        static public int maxX { get; set; } = 20;
-        static public int maxY { get; set; } = 20;
+        static public int maxX { get; set; } = 80;
+        static public int maxY { get; set; } = 60;
 
-        static public Brush background = Brushes.LightCyan;
+        static public double windowSizeModifier { get; set; } = 1900;
+
+        static public Brush backgroundColor { get; set; } = Brushes.LightCyan;
+        static public Brush lineColor { get; set; } = Brushes.Black;
     }
 }

@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:easyLabyrinth"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="500">
+        Title="Easy Labyrinth" 
+        ResizeMode="NoResize">
     <Grid x:Name="labGrid">
-        
+
     </Grid>
 </Window>

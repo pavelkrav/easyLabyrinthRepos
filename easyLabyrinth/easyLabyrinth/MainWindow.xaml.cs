@@ -30,43 +30,49 @@ namespace easyLabyrinth
         {
             base.OnInitialized(e);
 
+            double multiplier = Global.windowSizeModifier / (Global.maxX + Global.maxY);            
+            this.Width = Global.maxX * multiplier + 16;
+            this.Height = Global.maxY * multiplier + 39;
+
             Canvas labCanvas = new Canvas();
             labGrid.Height = this.Height - 39;
             labGrid.Width = this.Width - 16;
 
             labGrid.Children.Add(labCanvas);            
-            labCanvas.Background = Global.background;
+            labCanvas.Background = Global.backgroundColor;
 
-            this.Background = Global.background;
+            this.Background = Global.backgroundColor;
             this.Height += 0.6;
             this.Width += 0.6;
 
             Labyrinth testLab = new Labyrinth();
             foreach (Cell i in testLab.cells)
             {
-                drawCell(labCanvas, i);
+                drawCell(labCanvas, testLab, i.X, i.Y);
             }         
 
         }
 
-        private void drawCell(Canvas canvas, Cell currentCell)
+        private void drawCell(Canvas canvas, Labyrinth currentLab, int X, int Y)
         {
+            Cell currentCell = currentLab.cells[X, Y];
+
             double cellHeight = labGrid.Height / Global.maxY;
             double cellWidth = labGrid.Width / Global.maxX;
 
-            if (currentCell.top)
+            if (currentCell.top && (Y != 0? !currentLab.cells[X, Y - 1].bottom : true))
             {
                 drawCellLine(canvas, currentCell, 0, 0, cellWidth, 0);
             }
-            if (currentCell.bottom)
+            if (currentCell.bottom && (Y != (Global.maxY - 1) ? !currentLab.cells[X, Y + 1].top : true))
             {
                 drawCellLine(canvas, currentCell, 0, cellHeight, cellWidth, cellHeight);
             }
-            if (currentCell.left)
+            if (currentCell.left && (X != 0 ? !currentLab.cells[X - 1, Y].right : true))
             {
                 drawCellLine(canvas, currentCell, 0, 0, 0, cellHeight);
             }
-            if (currentCell.right)
+            if (currentCell.right && (X != (Global.maxX - 1) ? !currentLab.cells[X + 1, Y].left : true))
             {
                 drawCellLine(canvas, currentCell, cellWidth, 0, cellWidth, cellHeight);
             }
@@ -80,7 +86,7 @@ namespace easyLabyrinth
             currentLine.X2 = X2;
             currentLine.Y1 = Y1;
             currentLine.Y2 = Y2;
-            currentLine.Stroke = Brushes.Black;
+            currentLine.Stroke = Global.lineColor;
             currentLine.StrokeThickness = 2;
             Canvas.SetLeft(currentLine, labGrid.Width / Global.maxX * cell.X);
             Canvas.SetTop(currentLine, labGrid.Height / Global.maxY * cell.Y);
