@@ -5,8 +5,8 @@ namespace easyLabyrinth
 {
     static class Global
     {
-        static public int maxX { get; set; } = 80;
-        static public int maxY { get; set; } = 60;
+        static public int maxX { get; set; } = 15;
+        static public int maxY { get; set; } = 10;
 
         static public double windowSizeModifier { get; set; } = 1900;
 

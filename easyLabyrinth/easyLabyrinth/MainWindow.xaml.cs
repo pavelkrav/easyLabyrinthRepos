@@ -53,6 +53,18 @@ namespace easyLabyrinth
 
         }
 
+        private void keyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Right)
+            {
+                this.Width += 5; // test
+            }
+            if (e.Key == Key.Down)
+            {
+                this.Height += 5; //test
+            }
+        }
+
         private void drawCell(Canvas canvas, Labyrinth currentLab, int X, int Y)
         {
             Cell currentCell = currentLab.cells[X, Y];

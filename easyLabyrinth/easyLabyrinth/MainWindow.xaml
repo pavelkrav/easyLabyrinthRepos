@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:easyLabyrinth"
         mc:Ignorable="d"
         Title="Easy Labyrinth" 
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        KeyDown="keyDown">
     <Grid x:Name="labGrid">
 
     </Grid>
