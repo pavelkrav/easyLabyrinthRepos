@@ -20,6 +20,7 @@ namespace easyLabyrinth
     /// </summary>
     public partial class MainWindow : Window
     {
+        Player player;
 
         public MainWindow()
         {
@@ -45,11 +46,13 @@ namespace easyLabyrinth
             this.Height += 0.6;
             this.Width += 0.6;
 
-            Labyrinth testLab = new Labyrinth();
-            foreach (Cell i in testLab.cells)
+            Labyrinth lab = new Labyrinth();
+            foreach (Cell i in lab.cells)
             {
-                drawCell(labCanvas, testLab, i.X, i.Y);
-            }         
+                drawCell(labCanvas, lab, i.X, i.Y);
+            }
+
+            player = new Player(labGrid, lab);         
 
         }
 
@@ -57,11 +60,19 @@ namespace easyLabyrinth
         {
             if (e.Key == Key.Right)
             {
-                this.Width += 5; // test
+                player.moveRight();
             }
             if (e.Key == Key.Down)
             {
-                this.Height += 5; //test
+                player.moveDown();
+            }
+            if (e.Key == Key.Up)
+            {
+                player.moveUp();
+            }
+            if (e.Key == Key.Left)
+            {
+                player.moveLeft();
             }
         }
 
@@ -76,7 +87,7 @@ namespace easyLabyrinth
             {
                 drawCellLine(canvas, currentCell, 0, 0, cellWidth, 0);
             }
-            if (currentCell.bottom && (Y != (Global.maxY - 1) ? !currentLab.cells[X, Y + 1].top : true))
+            if (currentCell.bottom/* && (Y != (Global.maxY - 1) ? !currentLab.cells[X, Y + 1].top : true)*/)
             {
                 drawCellLine(canvas, currentCell, 0, cellHeight, cellWidth, cellHeight);
             }
@@ -84,7 +95,7 @@ namespace easyLabyrinth
             {
                 drawCellLine(canvas, currentCell, 0, 0, 0, cellHeight);
             }
-            if (currentCell.right && (X != (Global.maxX - 1) ? !currentLab.cells[X + 1, Y].left : true))
+            if (currentCell.right/* && (X != (Global.maxX - 1) ? !currentLab.cells[X + 1, Y].left : true)*/)
             {
                 drawCellLine(canvas, currentCell, cellWidth, 0, cellWidth, cellHeight);
             }

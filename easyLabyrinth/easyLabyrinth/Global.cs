@@ -12,5 +12,6 @@ namespace easyLabyrinth
 
         static public Brush backgroundColor { get; set; } = Brushes.LightCyan;
         static public Brush lineColor { get; set; } = Brushes.Black;
+        static public Brush playerColor { get; set; } = Brushes.Red;
     }
 }
