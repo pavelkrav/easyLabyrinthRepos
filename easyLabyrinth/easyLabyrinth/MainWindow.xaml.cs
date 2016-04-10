@@ -31,29 +31,13 @@ namespace easyLabyrinth
         {
             base.OnInitialized(e);
 
-            double multiplier = Global.windowSizeModifier / (Global.maxX + Global.maxY);            
-            this.Width = Global.maxX * multiplier + 16;
-            this.Height = Global.maxY * multiplier + 39;
+            drawNewLab();
 
-            Canvas labCanvas = new Canvas();
-            labGrid.Height = this.Height - 39;
-            labGrid.Width = this.Width - 16;
+        }
 
-            labGrid.Children.Add(labCanvas);            
-            labCanvas.Background = Global.backgroundColor;
-
-            this.Background = Global.backgroundColor;
-            this.Height += 0.6;
-            this.Width += 0.6;
-
-            Labyrinth lab = new Labyrinth();
-            foreach (Cell i in lab.cells)
-            {
-                drawCell(labCanvas, lab, i.X, i.Y);
-            }
-
-            player = new Player(labGrid, lab);         
-
+        private void OnPlayerWon(Object sender, WinEventArgs e)
+        {
+            Console.WriteLine("You won in {0} steps", e.steps);
         }
 
         private void keyDown(object sender, KeyEventArgs e)
@@ -74,6 +58,37 @@ namespace easyLabyrinth
             {
                 player.moveLeft();
             }
+            if (e.Key == Key.N)
+            {
+                drawNewLab();
+            }
+        }
+
+        private void drawNewLab()
+        {
+            double multiplier = Global.windowSizeModifier / (Global.maxX + Global.maxY);
+            this.Width = Global.maxX * multiplier + 16;
+            this.Height = Global.maxY * multiplier + 39;
+
+            Canvas labCanvas = new Canvas();
+            labGrid.Height = this.Height - 39;
+            labGrid.Width = this.Width - 16;
+
+            labGrid.Children.Add(labCanvas);
+            labCanvas.Background = Global.backgroundColor;
+
+            this.Background = Global.backgroundColor;
+            this.Height += 0.6;
+            this.Width += 0.6;
+
+            Labyrinth lab = new Labyrinth("random2");
+            foreach (Cell i in lab.cells)
+            {
+                drawCell(labCanvas, lab, i.X, i.Y);
+            }
+
+            player = new Player(labGrid, lab);
+            player.PlayerWon += OnPlayerWon;
         }
 
         private void drawCell(Canvas canvas, Labyrinth currentLab, int X, int Y)
