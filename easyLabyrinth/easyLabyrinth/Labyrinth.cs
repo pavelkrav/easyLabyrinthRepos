@@ -5,6 +5,8 @@ namespace easyLabyrinth
     class Labyrinth
     {
         public Cell[,] cells { get; set; } = new Cell[Global.maxX, Global.maxY];
+        public Cell startCell { get; set; }
+        public Cell finishCell { get; set; }
 
         public Labyrinth()
         {
@@ -15,6 +17,7 @@ namespace easyLabyrinth
                     cells[i, j] = new Cell(i, j);
                 }
             }
+
             for (int i = 0; i < Global.maxX; i++)
             {
                 for (int j = 0; j < Global.maxY; j++)
@@ -47,6 +50,12 @@ namespace easyLabyrinth
                             cells[i, j].bottom = true;
                     }
                     else cells[i, j].bottom = true;
+
+                    Random rand = new Random(Guid.NewGuid().GetHashCode());
+                    startCell = cells[rand.Next(Global.maxX), rand.Next(Global.maxY)];
+                    finishCell = startCell;
+                    while (finishCell == startCell)
+                        finishCell = cells[rand.Next(Global.maxX), rand.Next(Global.maxY)];
 
                     Console.WriteLine("({0},{1}) - top: {2}, bottom: {3}, left: {4}, right: {5}", cells[i, j].X, cells[i, j].Y, cells[i, j].top, cells[i, j].bottom, cells[i, j].left, cells[i, j].right);
                 }

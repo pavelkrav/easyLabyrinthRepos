@@ -100,6 +100,14 @@ namespace easyLabyrinth
                 drawCellLine(canvas, currentCell, cellWidth, 0, cellWidth, cellHeight);
             }
 
+            if (currentCell == currentLab.finishCell)
+            {
+                Rectangle rect = new Rectangle() { Height = cellHeight * 0.9, Width = cellWidth * 0.9, Fill = Brushes.Green, Stroke = Brushes.Green };
+                Canvas.SetTop(rect, (Y + 0.05) * cellHeight);
+                Canvas.SetLeft(rect, (X + 0.05) * cellWidth);
+                canvas.Children.Add(rect);
+            }
+
         }
 
         private void drawCellLine (Canvas canvas, Cell cell, double X1, double Y1, double X2, double Y2)
