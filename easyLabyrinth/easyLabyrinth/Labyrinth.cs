@@ -9,12 +9,14 @@ namespace easyLabyrinth
         public Cell startCell { get; set; }
         public Cell finishCell { get; set; }
 
+        List<string> directions = new List<string> { "up", "down", "left", "right" };
+
         public Labyrinth(string param)
         {
             if (param == "random")
                 fullRandom();
             if (param == "random2")
-                cleverRandom();
+                smartRandom();
         }
 
         private void fullRandom()
@@ -71,7 +73,7 @@ namespace easyLabyrinth
             return result;
         }
 
-        private void cleverRandom()
+        private void smartRandom()
         {
             for (int i = 0; i < Global.maxX; i++)
             {
@@ -101,22 +103,26 @@ namespace easyLabyrinth
             finishCell = cells[rand.Next(Global.maxX), rand.Next(Global.maxY)];
             startCell = finishCell;
 
-            List<string> directions = new List<string> { "up", "down", "left", "right"};
             for (int i = 0; i < Global.maxX * Global.maxY; i++)
             {
                 int num = rand.Next(4);
                 if (stepAvailable(startCell.X, startCell.Y, directions[num]))
                 {
+                    int X = startCell.X;
+                    int Y = startCell.Y;
                     if (num == 0)
-                        startCell.Y--;
+                        startCell = cells[X, Y-1];
                     if (num == 1)
-                        startCell.Y++;
+                        startCell = cells[X, Y+1];
                     if (num == 2)
-                        startCell.X--;
+                        startCell = cells[X-1, Y];
                     if (num == 3)
-                        startCell.X++;
+                        startCell = cells[X+1, Y];
                 }
             }
+
+            if (Math.Sqrt(Math.Pow((startCell.X - finishCell.X), 2) + Math.Pow((startCell.Y - finishCell.Y), 2)) < (Global.maxX + Global.maxY) / (0.023 * (Global.maxX + Global.maxY) + 1.8))
+                smartRandom();
         }
     }
 }

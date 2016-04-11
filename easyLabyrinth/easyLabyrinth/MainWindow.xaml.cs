@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace easyLabyrinth
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         Player player;
@@ -31,13 +28,16 @@ namespace easyLabyrinth
         {
             base.OnInitialized(e);
 
-            drawNewLab();
+            double multiplier = Global.windowSizeModifier / (Global.maxX + Global.maxY);
+            this.Width = Global.maxX * multiplier + 16.6;
+            this.Height = Global.maxY * multiplier + 39.6;
+            this.Background = Global.backgroundColor;
 
         }
 
         private void OnPlayerWon(Object sender, WinEventArgs e)
         {
-            Console.WriteLine("You won in {0} steps", e.steps);
+            Console.WriteLine($"You won in {e.steps} steps");
         }
 
         private void keyDown(object sender, KeyEventArgs e)
@@ -66,6 +66,7 @@ namespace easyLabyrinth
 
         private void drawNewLab()
         {
+            labGrid.Children.Clear();
             double multiplier = Global.windowSizeModifier / (Global.maxX + Global.maxY);
             this.Width = Global.maxX * multiplier + 16;
             this.Height = Global.maxY * multiplier + 39;
