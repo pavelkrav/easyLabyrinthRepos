@@ -38,6 +38,7 @@ namespace easyLabyrinth
         private void OnPlayerWon(Object sender, WinEventArgs e)
         {
             Console.WriteLine($"You won in {e.steps} steps");
+            drawCenteredText(labGrid, new Canvas(), $"You won in {e.steps} steps");
         }
 
         private void keyDown(object sender, KeyEventArgs e)
@@ -71,33 +72,41 @@ namespace easyLabyrinth
             this.Width = Global.maxX * multiplier + 16;
             this.Height = Global.maxY * multiplier + 39;
 
-            Canvas labCanvas = new Canvas();
             labGrid.Height = this.Height - 39;
-            labGrid.Width = this.Width - 16;
+            labGrid.Width = this.Width - 16;        
 
-            labGrid.Children.Add(labCanvas);
-            labCanvas.Background = Global.backgroundColor;
+            drawCenteredText(labGrid, new Canvas(), "Labyrinth generating...");
 
-            this.Background = Global.backgroundColor;
             this.Height += 0.6;
             this.Width += 0.6;
 
             Labyrinth lab = new Labyrinth("random2");
-            foreach (Cell i in lab.cells)
-            {
-                drawCell(labCanvas, lab, i.X, i.Y);
-            }
+            drawLabyrinth(labGrid, new Canvas(), lab); 
 
             player = new Player(labGrid, lab);
             player.PlayerWon += OnPlayerWon;
         }
 
-        private void drawCell(Canvas canvas, Labyrinth currentLab, int X, int Y)
+        private void drawLabyrinth(Grid grid, Canvas canvas, Labyrinth lab)
+        {
+            try
+            {
+                grid.Children.Clear();
+                grid.Children.Add(canvas);
+            }
+            catch (System.ArgumentException) {; }
+            foreach (Cell i in lab.cells)
+            {
+                drawCell(grid, canvas, lab, i.X, i.Y);
+            }
+        }
+
+        private void drawCell(Grid grid, Canvas canvas, Labyrinth currentLab, int X, int Y)
         {
             Cell currentCell = currentLab.cells[X, Y];
 
-            double cellHeight = labGrid.Height / Global.maxY;
-            double cellWidth = labGrid.Width / Global.maxX;
+            double cellHeight = grid.Height / Global.maxY;
+            double cellWidth = grid.Width / Global.maxX;
 
             if (currentCell.top && (Y != 0? !currentLab.cells[X, Y - 1].bottom : true))
             {
@@ -126,7 +135,7 @@ namespace easyLabyrinth
 
         }
 
-        private void drawCellLine (Canvas canvas, Cell cell, double X1, double Y1, double X2, double Y2)
+        private void drawCellLine (Canvas canvas, Cell cell, double X1, double Y1, double X2, double Y2) // could be upgraded with enum
         {
             Line currentLine = new Line();
             currentLine.X1 = X1;
@@ -138,6 +147,22 @@ namespace easyLabyrinth
             Canvas.SetLeft(currentLine, labGrid.Width / Global.maxX * cell.X);
             Canvas.SetTop(currentLine, labGrid.Height / Global.maxY * cell.Y);
             canvas.Children.Add(currentLine);
+        }
+
+        private void drawCenteredText (Grid grid, Canvas canvas, string text)
+        {
+            try
+            {
+                grid.Children.Clear();
+                grid.Children.Add(canvas);
+            }
+            catch (System.ArgumentException) { ; }
+            canvas.Children.Clear();
+            TextBox ini = new TextBox() { Foreground = Brushes.Black, Background = canvas.Background, FontSize = 15, Height = grid.Height, Width = grid.Width,
+                                        VerticalContentAlignment = VerticalAlignment.Center, HorizontalContentAlignment = HorizontalAlignment.Center };
+            ini.Text = text;
+            ini.FontWeight = FontWeights.Bold;
+            canvas.Children.Add(ini);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace easyLabyrinth
         public Cell startCell { get; set; }
         public Cell finishCell { get; set; }
 
-        List<string> directions = new List<string> { "up", "down", "left", "right" };
+        List<string> directions = new List<string> { "up", "down", "left", "right" }; // should be enum
 
         public Labyrinth(string param)
         {
@@ -17,6 +17,17 @@ namespace easyLabyrinth
                 fullRandom();
             if (param == "random2")
                 smartRandom();
+        }
+
+        private void zeroVisits()
+        {
+            for (int i = 0; i < Global.maxX; i++)
+            {
+                for (int j = 0; j < Global.maxY; j++)
+                {
+                    cells[i, j].visited = false;
+                }
+            }
         }
 
         private void fullRandom()
@@ -73,6 +84,49 @@ namespace easyLabyrinth
             return result;
         }
 
+        private double cellsLinked(int x1, int y1, int x2, int y2)
+        {
+            double result = -1;
+            try
+            {
+                zeroVisits();
+                cells[x1, y1].visited = true;
+                for (int times = 0; times < Global.maxX * Global.maxY; times++)
+                {
+                    for (int i = 0; i < Global.maxX; i++)
+                    {
+                        for (int j = 0; j < Global.maxY; j++)
+                        {
+                            if (cells[i, j].visited)
+                            {
+                                for (int num = 0; num < 4; num++)
+                                {
+                                    if (stepAvailable(cells[i, j].X, cells[i, j].Y, directions[num]))
+                                    {
+                                        int X = cells[i, j].X;
+                                        int Y = cells[i, j].Y;
+                                        if (num == 0)
+                                            cells[i, j - 1].visited = true;
+                                        if (num == 1)
+                                            cells[i, j + 1].visited = true;
+                                        if (num == 2)
+                                            cells[i + 1, j].visited = true;
+                                        if (num == 3)
+                                            cells[i - 1, j].visited = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (cells[x2, y2].visited)
+                    result = Math.Sqrt(Math.Pow((cells[x1, y1].X - cells[x2, y2].X), 2) + Math.Pow((cells[x1, y1].Y - cells[x2, y2].Y), 2));
+                zeroVisits();
+        }
+            catch (System.IndexOutOfRangeException) {; }
+            return result;
+        }
+
         private void smartRandom()
         {
             for (int i = 0; i < Global.maxX; i++)
@@ -103,21 +157,17 @@ namespace easyLabyrinth
             finishCell = cells[rand.Next(Global.maxX), rand.Next(Global.maxY)];
             startCell = finishCell;
 
-            for (int i = 0; i < Global.maxX * Global.maxY; i++)
+            double distance = 0;
+            for (int i = 0; i < Global.maxX; i++)
             {
-                int num = rand.Next(4);
-                if (stepAvailable(startCell.X, startCell.Y, directions[num]))
+                for (int j = 0; j < Global.maxY; j++)
                 {
-                    int X = startCell.X;
-                    int Y = startCell.Y;
-                    if (num == 0)
-                        startCell = cells[X, Y-1];
-                    if (num == 1)
-                        startCell = cells[X, Y+1];
-                    if (num == 2)
-                        startCell = cells[X-1, Y];
-                    if (num == 3)
-                        startCell = cells[X+1, Y];
+                    double buff = cellsLinked(cells[i, j].X, cells[i, j].Y, finishCell.X, finishCell.Y);
+                    if (buff > distance)
+                    {
+                        distance = buff;
+                        startCell = cells[i, j];
+                    }
                 }
             }
 

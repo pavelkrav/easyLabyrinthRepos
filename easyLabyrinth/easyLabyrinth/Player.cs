@@ -81,10 +81,7 @@ namespace easyLabyrinth
                         PlayerWon(this, e);
                     }
                 }
-                catch (System.IndexOutOfRangeException)
-                {
-                    ;
-                }
+                catch (System.IndexOutOfRangeException) { ; }
             }
         }
 
@@ -104,10 +101,7 @@ namespace easyLabyrinth
                         PlayerWon(this, e);
                     }
                 }
-                catch (System.IndexOutOfRangeException)
-                {
-                    ;
-                }
+                catch (System.IndexOutOfRangeException) { ; }
             }
         }
 
@@ -127,10 +121,7 @@ namespace easyLabyrinth
                         PlayerWon(this, e);
                     }
                 }
-                catch (System.IndexOutOfRangeException)
-                {
-                    ;
-                }
+                catch (System.IndexOutOfRangeException) { ; }
             }
         }
 
@@ -150,10 +141,7 @@ namespace easyLabyrinth
                         PlayerWon(this, e);
                     }
                 }
-                catch (System.IndexOutOfRangeException)
-                {
-                    ;
-                }
+                catch (System.IndexOutOfRangeException) { ; }
             }
         }
 
