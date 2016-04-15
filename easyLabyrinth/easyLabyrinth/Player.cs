@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Media.Animation;
 using System.Windows;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,28 @@ namespace easyLabyrinth
             playerSpot = new Ellipse();
             playerGrid = grid;
             playerGrid.Children.Add(playerCanvas);
+            initializeSpot();
+        }
+
+        public void initializeSpot()
+        {
             drawSpot();
+            DoubleAnimation spotAnimation = new DoubleAnimation() { Duration = TimeSpan.FromSeconds(2.5) };
+            spotAnimation.From = playerSpot.Width * 3;
+            spotAnimation.To = playerSpot.Width;
+            playerSpot.BeginAnimation(Ellipse.WidthProperty, spotAnimation);
+            spotAnimation.From = playerSpot.Height * 3;
+            spotAnimation.To = playerSpot.Height;
+            playerSpot.BeginAnimation(Ellipse.HeightProperty, spotAnimation);
+
+            double cellHeight = playerGrid.Height / Global.maxY;
+            double cellWidth = playerGrid.Width / Global.maxX;
+            spotAnimation.From = cellHeight / 2 * (2 * Y + 0.5) - playerSpot.Height;
+            spotAnimation.To = cellHeight / 2 * (2 * Y + 0.5);
+            playerSpot.BeginAnimation(Canvas.TopProperty, spotAnimation);
+            spotAnimation.From = cellWidth / 2 * (2 * X + 0.5) - playerSpot.Width;
+            spotAnimation.To = cellWidth / 2 * (2 * X + 0.5);
+            playerSpot.BeginAnimation(Canvas.LeftProperty, spotAnimation);
         }
 
         public void drawSpot()

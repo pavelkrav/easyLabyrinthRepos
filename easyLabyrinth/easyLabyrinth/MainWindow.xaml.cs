@@ -33,6 +33,10 @@ namespace easyLabyrinth
             this.Height = Global.maxY * multiplier + 39.6;
             this.Background = Global.backgroundColor;
 
+            labGrid.Height = this.Height - 39;
+            labGrid.Width = this.Width - 16;
+            drawCenteredText(labGrid, new Canvas(), "Press N to generate new maze");
+
         }
 
         private void OnPlayerWon(Object sender, WinEventArgs e)
@@ -75,12 +79,12 @@ namespace easyLabyrinth
             labGrid.Height = this.Height - 39;
             labGrid.Width = this.Width - 16;        
 
-            drawCenteredText(labGrid, new Canvas(), "Labyrinth generating...");
+            drawCenteredText(labGrid, new Canvas(), "Generating labyrinth...");
 
             this.Height += 0.6;
             this.Width += 0.6;
 
-            Labyrinth lab = new Labyrinth("random2");
+            Labyrinth lab = new Labyrinth(Generators.random2);
             drawLabyrinth(labGrid, new Canvas(), lab); 
 
             player = new Player(labGrid, lab);
