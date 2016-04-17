@@ -163,7 +163,7 @@ namespace easyLabyrinth
             catch (System.ArgumentException) { ; }
             canvas.Children.Clear();
             TextBox ini = new TextBox() { Foreground = Brushes.Black, Background = canvas.Background, FontSize = 15, Height = grid.Height, Width = grid.Width,
-                                        VerticalContentAlignment = VerticalAlignment.Center, HorizontalContentAlignment = HorizontalAlignment.Center };
+                                        VerticalContentAlignment = VerticalAlignment.Center, HorizontalContentAlignment = HorizontalAlignment.Center, IsReadOnly = true, Cursor = Cursors.None};
             ini.Text = text;
             ini.FontWeight = FontWeights.Bold;
             canvas.Children.Add(ini);

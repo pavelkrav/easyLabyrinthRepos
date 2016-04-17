@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="Easy Labyrinth" 
         ResizeMode="NoResize"
-        KeyDown="keyDown">
-    <Grid x:Name="labGrid">
+        KeyDown="keyDown" >
+    <Grid x:Name="labGrid" >
 
     </Grid>
 </Window>

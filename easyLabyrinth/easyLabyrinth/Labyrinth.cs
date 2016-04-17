@@ -72,7 +72,7 @@ namespace easyLabyrinth
         /// Checks if there is a link between cells and returns distance.
         /// </summary>
         /// <returns>-1 if no link there. Else distance between cells.</returns>
-        private double cellsLinked(int x1, int y1, int x2, int y2)
+        private double cellsLinking(int x1, int y1, int x2, int y2)
         {
             double result = -1;
             zeroVisits();
@@ -111,6 +111,58 @@ namespace easyLabyrinth
             return result;
         }
 
+        private bool cellSetTop(int x, int y, bool state)
+        {
+            bool result = false;
+            try
+            {
+                cells[x, y - 1].bottom = state;
+                cells[x, y].top = state;
+                result = true;
+            }
+            catch (System.IndexOutOfRangeException) {; }
+            return result;
+        }
+
+        private bool cellSetBottom(int x, int y, bool state)
+        {
+            bool result = false;
+            try
+            {
+                cells[x, y + 1].top = state;
+                cells[x, y].bottom = state;
+                result = true;
+            }
+            catch (System.IndexOutOfRangeException) {; }
+            return result;
+        }
+
+        private bool cellSetLeft(int x, int y, bool state)
+        {
+            bool result = false;
+            try
+            {
+                cells[x - 1, y].right = state;
+                cells[x, y].left = state;
+                result = true;
+            }
+            catch (System.IndexOutOfRangeException) {; }
+            return result;
+        }
+
+        private bool cellSetRight(int x, int y, bool state)
+        {
+            bool result = false;
+            try
+            {
+                cells[x + 1, y].left = state;
+                cells[x, y].right = state;
+                result = true;
+            }
+            catch (System.IndexOutOfRangeException) {; }
+            return result;
+        }
+
         private void smartRandom()
         {
             //
@@ -135,10 +187,9 @@ namespace easyLabyrinth
 
                     if (j == (Global.maxY - 1))
                         cells[i, j].bottom = true;
-
-                    Console.WriteLine("({0},{1}) - top: {2}, bottom: {3}, left: {4}, right: {5}", cells[i, j].X, cells[i, j].Y, cells[i, j].top, cells[i, j].bottom, cells[i, j].left, cells[i, j].right);
                 }
             }
+            Console.WriteLine("Random cells generated");
             //
             // Placing finish in a random place.
             //
@@ -146,29 +197,120 @@ namespace easyLabyrinth
             finishCell = cells[rand.Next(Global.maxX), rand.Next(Global.maxY)];
             startCell = finishCell;
             //
+            // Opening single cells (not creating doubles).
+            //
+            for (int i = 0; i < Global.maxX; i++)
+            {
+                for (int j = 0; j < Global.maxY; j++)
+                {
+                    if (cells[i, j].top && cells[i, j].bottom && cells[i, j].left && cells[i, j].right)
+                    {
+                        bool temp = false;
+                        int times = 0;
+                        while (!temp && times < 4)
+                        {
+                            int rnd = rand.Next(4);
+                            if (j != 0)
+                                if (rnd == 0 && (!cells[i, j - 1].top || !cells[i, j - 1].bottom || !cells[i, j - 1].left || !cells[i, j - 1].right))
+                                    temp = cellSetTop(i, j, false);
+                            if (j != Global.maxY - 1)
+                                if (rnd == 1 && (!cells[i, j + 1].top || !cells[i, j + 1].bottom || !cells[i, j + 1].left || !cells[i, j + 1].right))
+                                    temp = cellSetBottom(i, j, false);
+                            if (i != 0)
+                                if (rnd == 2 && (!cells[i - 1, j].top || !cells[i - 1, j].bottom || !cells[i - 1, j].left || !cells[i - 1, j].right))
+                                    temp = cellSetLeft(i, j, false);
+                            if (i != Global.maxX - 1)
+                                if (rnd == 3 && (!cells[i + 1, j].top || !cells[i + 1, j].bottom || !cells[i + 1, j].left || !cells[i + 1, j].right))
+                                    temp = cellSetRight(i, j, false);
+                            times++;
+                        }
+                    }
+                }
+            }
+            //
             // Marking linked cells as visited.
             //
             zeroVisits();
             finishCell.visited = true;
-            for (int times = 0; times < Global.maxX * Global.maxY; times++)
+            for (int a = 0; a < Global.maxX * Global.maxY; a++)
             {
-                for (int i = 0; i < Global.maxX; i++)
+                for (int b = 0; b < Global.maxX * Global.maxY - a; b++)
                 {
-                    for (int j = 0; j < Global.maxY; j++)
+                    for (int i = 0; i < Global.maxX; i++)
                     {
-                        if (cells[i, j].visited)
+                        for (int j = 0; j < Global.maxY; j++)
                         {
-                            if (!cells[i, j].top)
-                                cells[i, j - 1].visited = true;
-                            if (!cells[i, j].bottom)
-                                cells[i, j + 1].visited = true;
-                            if (!cells[i, j].right)
-                                cells[i + 1, j].visited = true;
-                            if (!cells[i, j].left)
-                                cells[i - 1, j].visited = true;
+                            if (cells[i, j].visited)
+                            {
+                                if (!cells[i, j].top)
+                                    cells[i, j - 1].visited = true;
+                                if (!cells[i, j].bottom)
+                                    cells[i, j + 1].visited = true;
+                                if (!cells[i, j].right)
+                                    cells[i + 1, j].visited = true;
+                                if (!cells[i, j].left)
+                                    cells[i - 1, j].visited = true;
+                            }
                         }
                     }
                 }
+                for (int i = 0; i < Global.maxX; i++)
+                {
+                    bool done = false;
+                    for (int j = 0; j < Global.maxY; j++)
+                    {                        
+                        if (!cells[i, j].visited)
+                        {
+                            //int rnd = rand.Next(4);           ////////////
+                            try
+                            {
+                                if (cells[i, j - 1].visited)
+                                {
+                                    cellSetTop(i, j, false);
+                                    done = true;
+                                    break;
+                                }
+                            }
+                            catch (System.IndexOutOfRangeException) {; }
+
+                            try
+                            {
+                                if (cells[i - 1, j].visited)
+                                {
+                                    cellSetLeft(i, j, false);
+                                    done = true;
+                                    break;
+                                }
+                            }
+                            catch (System.IndexOutOfRangeException) {; }
+
+                            try
+                            {
+                                if (cells[i, j + 1].visited)
+                                {
+                                    cellSetBottom(i, j, false);
+                                    done = true;
+                                    break;
+                                }
+                            }
+                            catch (System.IndexOutOfRangeException) {; }
+
+                            try
+                            {
+                                if (cells[i + 1, j].visited)
+                                {
+                                    cellSetRight(i, j, false);
+                                    done = true;
+                                    break;
+                                }
+                            }
+                            catch (System.IndexOutOfRangeException) {; }
+                        }                    
+                    }
+                    if (done)
+                        break;
+                }
+                Console.WriteLine($"Cells checked {a + 1} / {Global.maxX * Global.maxY}");
             }
             //
             // Searching for the farthest cell to place start.
