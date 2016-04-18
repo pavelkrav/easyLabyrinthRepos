@@ -77,14 +77,14 @@ namespace easyLabyrinth
             this.Height = Global.maxY * multiplier + 39;
 
             labGrid.Height = this.Height - 39;
-            labGrid.Width = this.Width - 16;        
+            labGrid.Width = this.Width - 16;
 
             drawCenteredText(labGrid, new Canvas(), "Generating labyrinth...");
 
             this.Height += 0.6;
             this.Width += 0.6;
 
-            Labyrinth lab = new Labyrinth(Generators.random2);
+            Labyrinth lab = new Labyrinth(Generators.smartRandom);
             drawLabyrinth(labGrid, new Canvas(), lab); 
 
             player = new Player(labGrid, lab);
@@ -153,7 +153,7 @@ namespace easyLabyrinth
             canvas.Children.Add(currentLine);
         }
 
-        private void drawCenteredText (Grid grid, Canvas canvas, string text)
+        public static void drawCenteredText (Grid grid, Canvas canvas, string text)
         {
             try
             {

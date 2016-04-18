@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace easyLabyrinth
 {
-    enum Generators { random, random2 };
+    enum Generators { random, smartRandom };
 
     class Labyrinth
     {
@@ -18,7 +18,7 @@ namespace easyLabyrinth
                 case Generators.random:
                     fullRandom();
                     break;
-                case Generators.random2:
+                case Generators.smartRandom:
                     smartRandom();
                     break;
             }
@@ -191,10 +191,14 @@ namespace easyLabyrinth
             }
             Console.WriteLine("Random cells generated");
             //
-            // Placing finish in a random place.
+            // Placing finish in a random place in a random corner.
             //
             Random rand = new Random(Guid.NewGuid().GetHashCode());
-            finishCell = cells[rand.Next(Global.maxX), rand.Next(Global.maxY)];
+            do
+            {
+                finishCell = cells[rand.Next(Global.maxX), rand.Next(Global.maxY)];
+            }
+            while (!(finishCell.X < Global.maxX * 0.1 || finishCell.X > Global.maxX * 0.9) || !(finishCell.Y < Global.maxY * 0.1 || finishCell.Y > Global.maxY * 0.9));
             startCell = finishCell;
             //
             // Opening single cells (not creating doubles).
@@ -232,6 +236,7 @@ namespace easyLabyrinth
             //
             zeroVisits();
             finishCell.visited = true;
+            int visitable = 1;
             for (int a = 0; a < Global.maxX * Global.maxY; a++)
             {
                 for (int b = 0; b < Global.maxX * Global.maxY - a; b++)
@@ -243,17 +248,46 @@ namespace easyLabyrinth
                             if (cells[i, j].visited)
                             {
                                 if (!cells[i, j].top)
-                                    cells[i, j - 1].visited = true;
+                                {
+                                    if (!cells[i, j - 1].visited)
+                                    {
+                                        cells[i, j - 1].visited = true;
+                                        visitable++;
+                                    }
+                                }
                                 if (!cells[i, j].bottom)
-                                    cells[i, j + 1].visited = true;
+                                {
+                                    if (!cells[i, j + 1].visited)
+                                    {
+                                        cells[i, j + 1].visited = true;
+                                        visitable++;
+                                    }
+                                }
                                 if (!cells[i, j].right)
-                                    cells[i + 1, j].visited = true;
+                                {
+                                    if (!cells[i + 1, j].visited)
+                                    {
+                                        cells[i + 1, j].visited = true;
+                                        visitable++;
+                                    }
+                                }
                                 if (!cells[i, j].left)
-                                    cells[i - 1, j].visited = true;
+                                {
+                                    if (!cells[i - 1, j].visited)
+                                    {
+                                        cells[i - 1, j].visited = true;
+                                        visitable++;
+                                    }
+                                }
                             }
                         }
                     }
                 }
+                // checking if all cells already visitable
+                Console.WriteLine($"Visitable cells {visitable} / {Global.maxX * Global.maxY}");
+                if (visitable == Global.maxX * Global.maxY)
+                    break;
+                // opening a wall then check visitable cells again
                 for (int i = 0; i < Global.maxX; i++)
                 {
                     bool done = false;
@@ -307,10 +341,10 @@ namespace easyLabyrinth
                             catch (System.IndexOutOfRangeException) {; }
                         }                    
                     }
+                    // opening only one wall per time
                     if (done)
                         break;
                 }
-                Console.WriteLine($"Cells checked {a + 1} / {Global.maxX * Global.maxY}");
             }
             //
             // Searching for the farthest cell to place start.
